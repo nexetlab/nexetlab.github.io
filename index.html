@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -257,7 +258,7 @@
             animation: float 6s ease-in-out infinite reverse;
         }
         
-        /* AI Section - Fixed */
+        /* AI Section - Enhanced for Mobile */
         .ai-section {
             padding: 120px 5%;
             background: linear-gradient(145deg, #f1f2f6, #ffffff);
@@ -471,6 +472,15 @@
             transform: scale(1);
         }
 
+        /* Mobile Card Counter */
+        .mobile-card-counter {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
         /* Animations */
         @keyframes fadeInUp {
             from {
@@ -520,6 +530,23 @@
 
         .ai-card.slide-in {
             animation: cardSlideIn 0.8s ease-out forwards;
+        }
+
+        /* Swipe indicator for mobile */
+        .swipe-indicator {
+            display: none;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(108, 92, 231, 0.6);
+            font-size: 0.9rem;
+            animation: fadeInOut 2s infinite;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
         }
         
         /* Mobile Responsiveness */
@@ -585,22 +612,62 @@
                 display: none;
             }
 
-            .ai-cards-container {
-                overflow-x: auto;
-                scroll-snap-type: x mandatory;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: none;
-                -ms-overflow-style: none;
+            /* Mobile-specific AI Cards */
+            .ai-cards-wrapper {
+                overflow: hidden;
+                margin: 0 -5%;
+                padding: 0 5%;
+                position: relative;
             }
 
-            .ai-cards-container::-webkit-scrollbar {
-                display: none;
+            .ai-cards-container {
+                display: flex;
+                gap: 20px;
+                padding: 20px 0;
+                transition: transform 0.3s ease;
+                will-change: transform;
             }
-            
+
             .ai-card {
                 min-width: 85%;
                 flex: 0 0 85%;
+                margin: 0 2.5%;
                 scroll-snap-align: center;
+            }
+
+            .ai-card:hover {
+                transform: translateY(-5px) scale(1.02);
+                box-shadow: 0 15px 30px rgba(108,92,231,0.2);
+            }
+
+            .ai-card.active {
+                transform: translateY(-5px) scale(1.02);
+                box-shadow: 0 15px 30px rgba(108,92,231,0.2);
+            }
+
+            /* Hide desktop controls on mobile */
+            .carousel-prev, .carousel-next {
+                display: none;
+            }
+
+            /* Show mobile-specific elements */
+            .mobile-card-counter {
+                display: block;
+            }
+
+            .swipe-indicator {
+                display: block;
+            }
+
+            /* Adjust dots for mobile */
+            .carousel-dots {
+                margin-top: 30px;
+                justify-content: center;
+            }
+
+            .carousel-dots .dot {
+                width: 10px;
+                height: 10px;
             }
         }
         
@@ -615,6 +682,27 @@
             
             .services-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .ai-card {
+                min-width: 90%;
+                flex: 0 0 90%;
+                padding: 30px 20px;
+            }
+
+            .card-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 1.8rem;
+            }
+
+            .ai-card h3 {
+                font-size: 1.3rem;
+            }
+
+            .card-tech span {
+                font-size: 0.75rem;
+                padding: 5px 12px;
             }
         }
 
@@ -716,7 +804,7 @@
     </section>
 
     <!-- AI Capabilities Section -->
-    <section class="ai-section" id = "ai-section">
+    <section class="ai-section" id="ai-section">
         <div class="section-title">
             <h2>Our AI Capabilities</h2>
             <p>Powering intelligent systems through advanced AI technologies in NLP, Computer Vision, and Deep Learning</p>
@@ -835,10 +923,10 @@
                         <span>PDF Parsers</span>
                     </div>
                 </div>
-
-
-
-
+            </div>
+            
+            <div class="swipe-indicator">
+                <i class="fas fa-hand-point-left"></i> Swipe to explore
             </div>
         </div>
 
@@ -846,6 +934,10 @@
             <button class="carousel-prev"><i class="fas fa-chevron-left"></i></button>
             <div class="carousel-dots"></div>
             <button class="carousel-next"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        
+        <div class="mobile-card-counter">
+            <span id="current-card">1</span> / <span id="total-cards">8</span>
         </div>
     </section>
 
@@ -866,18 +958,18 @@
         // Mobile Menu Toggle
         const mobileMenu = document.getElementById('mobile-menu');
         const navLinks = document.getElementById('nav-links');
-        
+
         mobileMenu.addEventListener('click', () => {
             navLinks.classList.toggle('active');
         });
-        
+
         // Close mobile menu when clicking a link
         document.querySelectorAll('.nav-links a').forEach(link => {
             link.addEventListener('click', () => {
                 navLinks.classList.remove('active');
             });
         });
-        
+
         // Navbar scroll effect
         window.addEventListener('scroll', () => {
             const navbar = document.querySelector('.navbar');
@@ -887,7 +979,7 @@
                 navbar.classList.remove('scrolled');
             }
         });
-        
+
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
@@ -913,8 +1005,13 @@
             const dotsContainer = document.querySelector('.carousel-dots');
             const prevBtn = document.querySelector('.carousel-prev');
             const nextBtn = document.querySelector('.carousel-next');
+            const currentCardSpan = document.getElementById('current-card');
+            const totalCardsSpan = document.getElementById('total-cards');
             
             if (!container || !cards.length) return;
+            
+            // Set total cards count
+            if (totalCardsSpan) totalCardsSpan.textContent = cards.length;
             
             // Create dots
             cards.forEach((_, index) => {
@@ -928,132 +1025,181 @@
             const dots = document.querySelectorAll('.dot');
             let currentIndex = 0;
             let isAnimating = false;
+            let autoScroll;
             
-            // Calculate card width including gap
-            const getCardWidth = () => {
-                const cardStyle = window.getComputedStyle(cards[0]);
-                const cardWidth = cards[0].offsetWidth;
-                const gap = 30; // gap from CSS
-                return cardWidth + gap;
-            };
+            // Check if mobile
+            const isMobile = window.innerWidth <= 768;
             
-            // Auto-scroll every 4 seconds
-            let autoScroll = setInterval(() => {
-                if (!isAnimating) {
-                    currentIndex = (currentIndex + 1) % cards.length;
-                    scrollToCard(currentIndex);
-                }
-            }, 4000);
-            
-            function scrollToCard(index, smooth = true) {
-                if (isAnimating) return;
+            if (isMobile) {
+                // Mobile touch gallery behavior
+                let touchStartX = 0;
+                let touchEndX = 0;
+                let isDragging = false;
+                let startTransform = 0;
                 
-                isAnimating = true;
-                currentIndex = index;
+                const getCardWidth = () => {
+                    const cardStyle = window.getComputedStyle(cards[0]);
+                    const cardWidth = cards[0].offsetWidth;
+                    const gap = 20;
+                    return cardWidth + gap;
+                };
                 
-                // Add slide-in animation to current card
-                cards[currentIndex].classList.add('slide-in');
-                
-                // Remove active class from all cards
-                cards.forEach(card => card.classList.remove('active'));
-                
-                // Add active class to current card
-                cards[currentIndex].classList.add('active');
-                
-                // Calculate transform
-                const cardWidth = getCardWidth();
-                const offset = -index * cardWidth;
-                
-                container.style.transform = `translateX(${offset}px)`;
-                
-                // Update dots
-                dots.forEach((dot, i) => {
-                    dot.classList.toggle('active', i === index);
-                });
-                
-                // Reset auto-scroll timer
-                clearInterval(autoScroll);
-                
-                setTimeout(() => {
-                    isAnimating = false;
-                    // Remove slide-in class after animation
-                    cards[currentIndex].classList.remove('slide-in');
+                function updateMobileView() {
+                    const cardWidth = getCardWidth();
+                    const offset = -currentIndex * cardWidth;
+                    container.style.transform = `translateX(${offset}px)`;
                     
-                    // Restart auto-scroll
-                    autoScroll = setInterval(() => {
-                        if (!isAnimating) {
-                            currentIndex = (currentIndex + 1) % cards.length;
-                            scrollToCard(currentIndex);
+                    // Update dots
+                    dots.forEach((dot, i) => {
+                        dot.classList.toggle('active', i === currentIndex);
+                    });
+                    
+                    // Update counter
+                    if (currentCardSpan) currentCardSpan.textContent = currentIndex + 1;
+                    
+                    // Update active card
+                    cards.forEach((card, i) => {
+                        card.classList.toggle('active', i === currentIndex);
+                    });
+                }
+                
+                container.addEventListener('touchstart', (e) => {
+                    touchStartX = e.touches[0].clientX;
+                    isDragging = true;
+                    startTransform = currentIndex;
+                    container.style.transition = 'none';
+                }, { passive: true });
+                
+                container.addEventListener('touchmove', (e) => {
+                    if (!isDragging) return;
+                    
+                    touchEndX = e.touches[0].clientX;
+                    const diff = touchStartX - touchEndX;
+                    const cardWidth = getCardWidth();
+                    const currentOffset = -startTransform * cardWidth;
+                    const newOffset = currentOffset - diff;
+                    
+                    container.style.transform = `translateX(${newOffset}px)`;
+                }, { passive: true });
+                
+                container.addEventListener('touchend', (e) => {
+                    if (!isDragging) return;
+                    
+                    isDragging = false;
+                    container.style.transition = 'transform 0.3s ease';
+                    
+                    const swipeThreshold = 50;
+                    const diff = touchStartX - touchEndX;
+                    
+                    if (Math.abs(diff) > swipeThreshold) {
+                        if (diff > 0 && currentIndex < cards.length - 1) {
+                            currentIndex++;
+                        } else if (diff < 0 && currentIndex > 0) {
+                            currentIndex--;
                         }
-                    }, 4000);
-                }, 800);
-            }
-            
-            // Manual controls
-            prevBtn.addEventListener('click', () => {
-                if (!isAnimating) {
-                    currentIndex = (currentIndex - 1 + cards.length) % cards.length;
-                    scrollToCard(currentIndex);
-                }
-            });
-            
-            nextBtn.addEventListener('click', () => {
-                if (!isAnimating) {
-                    currentIndex = (currentIndex + 1) % cards.length;
-                    scrollToCard(currentIndex);
-                }
-            });
-            
-            // Pause auto-scroll on hover
-            const aiSection = document.querySelector('.ai-section');
-            aiSection.addEventListener('mouseenter', () => {
-                clearInterval(autoScroll);
-            });
-            
-            aiSection.addEventListener('mouseleave', () => {
-                if (!isAnimating) {
-                                        autoScroll = setInterval(() => {
-                        if (!isAnimating) {
-                            currentIndex = (currentIndex + 1) % cards.length;
-                            scrollToCard(currentIndex);
-                        }
-                    }, 4000);
-                }
-            });
-
-            // Touch swipe support for mobile
-            let touchStartX = 0;
-            let touchEndX = 0;
-
-            container.addEventListener('touchstart', (e) => {
-                touchStartX = e.changedTouches[0].screenX;
-                clearInterval(autoScroll);
-            }, { passive: true });
-
-            container.addEventListener('touchend', (e) => {
-                touchEndX = e.changedTouches[0].screenX;
-                handleSwipe();
-                if (!isAnimating) {
-                    autoScroll = setInterval(() => {
+                    }
+                    
+                    updateMobileView();
+                }, { passive: true });
+                
+                // Initialize mobile view
+                updateMobileView();
+                
+            } else {
+                // Desktop behavior
+                const getCardWidth = () => {
+                    const cardStyle = window.getComputedStyle(cards[0]);
+                    const cardWidth = cards[0].offsetWidth;
+                    const gap = 30;
+                    return cardWidth + gap;
+                };
+                
+                // Auto-scroll every 4 seconds
+                autoScroll = setInterval(() => {
+                    if (!isAnimating) {
                         currentIndex = (currentIndex + 1) % cards.length;
                         scrollToCard(currentIndex);
-                    }, 4000);
+                    }
+                }, 4000);
+                
+                function scrollToCard(index, smooth = true) {
+                    if (isAnimating) return;
+                    
+                    isAnimating = true;
+                    currentIndex = index;
+                    
+                    cards[currentIndex].classList.add('slide-in');
+                    cards.forEach(card => card.classList.remove('active'));
+                    cards[currentIndex].classList.add('active');
+                    
+                    const cardWidth = getCardWidth();
+                    const offset = -index * cardWidth;
+                    
+                    container.style.transform = `translateX(${offset}px)`;
+                    
+                    dots.forEach((dot, i) => {
+                        dot.classList.toggle('active', i === index);
+                    });
+                    
+                    clearInterval(autoScroll);
+                    
+                    setTimeout(() => {
+                        isAnimating = false;
+                        cards[currentIndex].classList.remove('slide-in');
+                        
+                        autoScroll = setInterval(() => {
+                            if (!isAnimating) {
+                                currentIndex = (currentIndex + 1) % cards.length;
+                                scrollToCard(currentIndex);
+                            }
+                        }, 4000);
+                    }, 800);
                 }
-            }, { passive: true });
-
-            function handleSwipe() {
-                const swipeThreshold = 50;
-                if (touchEndX < touchStartX - swipeThreshold) {
-                    currentIndex = (currentIndex + 1) % cards.length;
-                    scrollToCard(currentIndex);
-                } else if (touchEndX > touchStartX + swipeThreshold) {
-                    currentIndex = (currentIndex - 1 + cards.length) % cards.length;
-                    scrollToCard(currentIndex);
-                }
+                
+                // Manual controls
+                prevBtn.addEventListener('click', () => {
+                    if (!isAnimating) {
+                        currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+                        scrollToCard(currentIndex);
+                    }
+                });
+                
+                nextBtn.addEventListener('click', () => {
+                    if (!isAnimating) {
+                        currentIndex = (currentIndex + 1) % cards.length;
+                        scrollToCard(currentIndex);
+                    }
+                });
+                
+                // Pause auto-scroll on hover
+                const aiSection = document.querySelector('.ai-section');
+                aiSection.addEventListener('mouseenter', () => {
+                    clearInterval(autoScroll);
+                });
+                
+                aiSection.addEventListener('mouseleave', () => {
+                    if (!isAnimating) {
+                        autoScroll = setInterval(() => {
+                            if (!isAnimating) {
+                                currentIndex = (currentIndex + 1) % cards.length;
+                                scrollToCard(currentIndex);
+                            }
+                        }, 4000);
+                    }
+                });
+                
+                // Initial scroll positioning
+                scrollToCard(currentIndex);
             }
-
-            // Initial scroll positioning
-            scrollToCard(currentIndex);
+            
+            // Handle window resize
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    location.reload(); // Simple solution to handle orientation change
+                }, 500);
+            });
         });
     </script>
 </body>
