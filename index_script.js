@@ -245,52 +245,76 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-    const dice = document.querySelector('.tech-dice');
-    const faces = 6; // Number of dice faces
-    let currentFace = 1;
-    let isRolling = false;
-    
-    // Function to roll the dice to a random face
-    function rollDice() {
-        if (isRolling) return;
-        
-        isRolling = true;
-        const randomFace = Math.floor(Math.random() * faces) + 1;
-        
-        // Only roll if it's a new face
-        if (randomFace !== currentFace) {
-            dice.classList.add('dice-rolling');
+        document.addEventListener('DOMContentLoaded', function() {
+            const dice = document.querySelector('.tech-dice');
+            const diceContainer = document.querySelector('.tech-dice-container');
+            let isDragging = false;
+            let previousMousePosition = { x: 0, y: 0 };
+            let rotation = { x: -15, y: 15, z: 0 };
             
-            // After animation completes, set the new face
-            setTimeout(() => {
-                const rotations = {
-                    1: 'rotateX(0deg) rotateY(0deg) rotateZ(0deg)',
-                    2: 'rotateX(0deg) rotateY(90deg) rotateZ(0deg)',
-                    3: 'rotateX(0deg) rotateY(180deg) rotateZ(0deg)',
-                    4: 'rotateX(0deg) rotateY(-90deg) rotateZ(0deg)',
-                    5: 'rotateX(90deg) rotateY(0deg) rotateZ(0deg)',
-                    6: 'rotateX(-90deg) rotateY(0deg) rotateZ(0deg)'
-                };
+            // Make dice interactive
+            diceContainer.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+                dice.style.animation = 'none';
+                diceContainer.style.cursor = 'grabbing';
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
                 
-                dice.style.transform = rotations[randomFace];
-                dice.classList.remove('dice-rolling');
-                currentFace = randomFace;
-                isRolling = false;
-            }, 1500);
-        } else {
-            // If same face, roll again
-            isRolling = false;
-            rollDice();
-        }
-    }
-    
-    // Initial roll after 1 second
-    setTimeout(rollDice, 1000);
-    
-    // Auto-roll every 5 seconds
-    setInterval(rollDice, 5000);
-    
-    // Also roll on click/tap
-    dice.addEventListener('click', rollDice);
-});
+                const deltaX = e.clientX - previousMousePosition.x;
+                const deltaY = e.clientY - previousMousePosition.y;
+                
+                rotation.y += deltaX * 0.5;
+                rotation.x -= deltaY * 0.5;
+                
+                dice.style.transform = `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) rotateZ(${rotation.z}deg)`;
+                
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            });
+            
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+                // Resume slow rotation after 3 seconds of inactivity
+                setTimeout(() => {
+                    if (!isDragging) {
+                        dice.style.animation = 'slowRotate 20s infinite linear';
+                    }
+                }, 3000);
+                diceContainer.style.cursor = 'grab';
+            });
+            
+            // Touch support for mobile devices
+            diceContainer.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                dice.style.animation = 'none';
+                e.preventDefault();
+            });
+            
+            document.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                
+                const deltaX = e.touches[0].clientX - previousMousePosition.x;
+                const deltaY = e.touches[0].clientY - previousMousePosition.y;
+                
+                rotation.y += deltaX * 0.5;
+                rotation.x -= deltaY * 0.5;
+                
+                dice.style.transform = `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) rotateZ(${rotation.z}deg)`;
+                
+                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                e.preventDefault();
+            });
+            
+            document.addEventListener('touchend', () => {
+                isDragging = false;
+                // Resume slow rotation after 3 seconds of inactivity
+                setTimeout(() => {
+                    if (!isDragging) {
+                        dice.style.animation = 'slowRotate 20s infinite linear';
+                    }
+                }, 3000);
+            });
+        });
