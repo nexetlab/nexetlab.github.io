@@ -723,3 +723,323 @@ body {
 .social-links a:hover {
     color: var(--accent);
 }
+
+
+/* Tech Stack Strip */
+.tech-stack-strip {
+    position: absolute;
+    left: 5%;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    z-index: 3;
+    animation: fadeInLeft 1s ease 0.6s forwards;
+    opacity: 0;
+}
+
+.tech-logo {
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid rgba(108, 92, 231, 0.1);
+    animation: techFloat 4s ease-in-out infinite;
+}
+
+.tech-logo:nth-child(even) {
+    animation-delay: -2s;
+}
+
+.tech-logo::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(108, 92, 231, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.tech-logo:hover::before {
+    left: 100%;
+}
+
+.tech-logo:hover {
+    transform: translateX(10px) scale(1.1);
+    background: rgba(108, 92, 231, 0.1);
+    border-color: var(--primary);
+    box-shadow: 0 10px 25px rgba(108, 92, 231, 0.3);
+}
+
+.tech-logo img {
+    width: 35px;
+    height: 35px;
+    transition: all 0.3s ease;
+    filter: grayscale(100%) opacity(0.7);
+}
+
+.tech-logo:hover img {
+    filter: grayscale(0%) opacity(1);
+    transform: rotate(5deg);
+}
+
+/* Tech logo individual delays for wave effect */
+.tech-logo:nth-child(1) { animation-delay: 0s; }
+.tech-logo:nth-child(2) { animation-delay: 0.5s; }
+.tech-logo:nth-child(3) { animation-delay: 1s; }
+.tech-logo:nth-child(4) { animation-delay: 1.5s; }
+.tech-logo:nth-child(5) { animation-delay: 2s; }
+.tech-logo:nth-child(6) { animation-delay: 2.5s; }
+.tech-logo:nth-child(7) { animation-delay: 3s; }
+.tech-logo:nth-child(8) { animation-delay: 3.5s; }
+
+/* Animations */
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateY(-50%) translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(-50%) translateX(0);
+    }
+}
+
+@keyframes techFloat {
+    0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+    25% {
+        transform: translateY(-8px) rotate(1deg);
+    }
+    50% {
+        transform: translateY(-15px) rotate(0deg);
+    }
+    75% {
+        transform: translateY(-8px) rotate(-1deg);
+    }
+}
+
+/* Mobile Responsiveness for Tech Stack */
+@media (max-width: 992px) {
+    .tech-stack-strip {
+        left: 3%;
+        gap: 20px;
+    }
+    
+    .tech-logo {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .tech-logo img {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+@media (max-width: 768px) {
+    .tech-stack-strip {
+        position: relative;
+        left: auto;
+        top: auto;
+        transform: none;
+        flex-direction: row;
+        justify-content: center;
+        margin: 30px 0;
+        gap: 15px;
+        flex-wrap: wrap;
+        max-width: 100%;
+        padding: 0 20px;
+    }
+    
+    .tech-logo {
+        width: 45px;
+        height: 45px;
+        flex: 0 0 auto;
+    }
+    
+    .tech-logo img {
+        width: 25px;
+        height: 25px;
+    }
+    
+    .tech-logo:hover {
+        transform: scale(1.05);
+    }
+}
+
+@media (max-width: 576px) {
+    .tech-stack-strip {
+        gap: 12px;
+    }
+    
+    .tech-logo {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .tech-logo img {
+        width: 22px;
+        height: 22px;
+    }
+}
+
+/* Hero Section Adjustments */
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5%;
+    position: relative;
+}
+
+.hero-content {
+    max-width: 600px;
+    z-index: 2;
+}
+
+/* Tech Dice Styles */
+.tech-dice-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    perspective: 1000px;
+    margin-left: 50px;
+}
+
+.tech-dice {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 1.5s cubic-bezier(0.4, 2.5, 0.3, 0.8);
+    transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+}
+
+.tech-dice-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: white;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 2px solid rgba(108, 92, 231, 0.2);
+    backface-visibility: hidden;
+}
+
+.tech-dice-face img {
+    width: 70%;
+    height: 70%;
+    object-fit: contain;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
+}
+
+/* Position each face of the dice */
+.tech-dice-face[data-face="1"] {
+    transform: rotateY(0deg) translateZ(100px);
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+}
+.tech-dice-face[data-face="2"] {
+    transform: rotateY(90deg) translateZ(100px);
+    background: linear-gradient(135deg, #fff5f5 0%, #ffecec 100%);
+}
+.tech-dice-face[data-face="3"] {
+    transform: rotateY(180deg) translateZ(100px);
+    background: linear-gradient(135deg, #f5fff7 0%, #e6f7ea 100%);
+}
+.tech-dice-face[data-face="4"] {
+    transform: rotateY(-90deg) translateZ(100px);
+    background: linear-gradient(135deg, #f5f9ff 0%, #e6efff 100%);
+}
+.tech-dice-face[data-face="5"] {
+    transform: rotateX(90deg) translateZ(100px);
+    background: linear-gradient(135deg, #fffbf5 0%, #fff2e6 100%);
+}
+.tech-dice-face[data-face="6"] {
+    transform: rotateX(-90deg) translateZ(100px);
+    background: linear-gradient(135deg, #faf5ff 0%, #f0e6ff 100%);
+}
+
+.tech-dice-label {
+    position: absolute;
+    bottom: -40px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-weight: 600;
+    color: var(--primary);
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Animation for dice roll */
+@keyframes diceRoll {
+    0% {
+        transform: rotateX(0) rotateY(0) rotateZ(0);
+    }
+    100% {
+        transform: rotateX(720deg) rotateY(360deg) rotateZ(180deg);
+    }
+}
+
+.dice-rolling {
+    animation: diceRoll 1.5s cubic-bezier(0.4, 2.5, 0.3, 0.8) forwards;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .hero {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .tech-dice-container {
+        margin: 50px auto 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .tech-dice-container {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .tech-dice-face {
+        border-radius: 10px;
+    }
+    
+    .tech-dice-face[data-face="1"] {
+        transform: rotateY(0deg) translateZ(75px);
+    }
+    .tech-dice-face[data-face="2"] {
+        transform: rotateY(90deg) translateZ(75px);
+    }
+    .tech-dice-face[data-face="3"] {
+        transform: rotateY(180deg) translateZ(75px);
+    }
+    .tech-dice-face[data-face="4"] {
+        transform: rotateY(-90deg) translateZ(75px);
+    }
+    .tech-dice-face[data-face="5"] {
+        transform: rotateX(90deg) translateZ(75px);
+    }
+    .tech-dice-face[data-face="6"] {
+        transform: rotateX(-90deg) translateZ(75px);
+    }
+}

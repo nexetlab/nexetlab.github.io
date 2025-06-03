@@ -244,3 +244,53 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 500);
     });
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const dice = document.querySelector('.tech-dice');
+    const faces = 6; // Number of dice faces
+    let currentFace = 1;
+    let isRolling = false;
+    
+    // Function to roll the dice to a random face
+    function rollDice() {
+        if (isRolling) return;
+        
+        isRolling = true;
+        const randomFace = Math.floor(Math.random() * faces) + 1;
+        
+        // Only roll if it's a new face
+        if (randomFace !== currentFace) {
+            dice.classList.add('dice-rolling');
+            
+            // After animation completes, set the new face
+            setTimeout(() => {
+                const rotations = {
+                    1: 'rotateX(0deg) rotateY(0deg) rotateZ(0deg)',
+                    2: 'rotateX(0deg) rotateY(90deg) rotateZ(0deg)',
+                    3: 'rotateX(0deg) rotateY(180deg) rotateZ(0deg)',
+                    4: 'rotateX(0deg) rotateY(-90deg) rotateZ(0deg)',
+                    5: 'rotateX(90deg) rotateY(0deg) rotateZ(0deg)',
+                    6: 'rotateX(-90deg) rotateY(0deg) rotateZ(0deg)'
+                };
+                
+                dice.style.transform = rotations[randomFace];
+                dice.classList.remove('dice-rolling');
+                currentFace = randomFace;
+                isRolling = false;
+            }, 1500);
+        } else {
+            // If same face, roll again
+            isRolling = false;
+            rollDice();
+        }
+    }
+    
+    // Initial roll after 1 second
+    setTimeout(rollDice, 1000);
+    
+    // Auto-roll every 5 seconds
+    setInterval(rollDice, 5000);
+    
+    // Also roll on click/tap
+    dice.addEventListener('click', rollDice);
+});
