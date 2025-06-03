@@ -474,4 +474,73 @@
     <!-- Mission Section -->
     <section class="mission">
         <div class="mission-container">
+            <div class="mission-image">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80" alt="Our Mission">
+            </div>
+            <div class="mission-content">
+                <h3>Our Mission</h3>
+                <p>To empower businesses and individuals through innovative technology solutions that anticipate future needs. We believe in building not just for today, but for the challenges and opportunities of tomorrow.</p>
+                <p>At neXet Lab, we combine technical expertise with creative problem-solving to deliver solutions that are both cutting-edge and practical. Our approach is rooted in research, collaboration, and a relentless pursuit of excellence.</p>
+                <p>Whether it's developing custom datasets, crafting compelling content, or building robust web applications, we're committed to delivering work that moves the needle for our clients and pushes the boundaries of what's possible.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 neXet Lab. All rights reserved.</p>
+        <p>Next Emerging Technology for a Better Tomorrow</p>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-github"></i></a>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navLinks = document.getElementById('nav-links');
+        
+        mobileMenu.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+        
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+        
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Set active link based on current page
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPage = location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('.nav-links a');
+            
+            links.forEach(link => {
+                const linkPage = link.getAttribute('href').split('/').pop();
+                if (currentPage === linkPage || 
+                   (currentPage === '' && linkPage === 'index.html')) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
            
